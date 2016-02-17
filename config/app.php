@@ -157,7 +157,9 @@ return [
         App\Providers\RouteServiceProvider::class,
         LucaDegasperi\OAuth2Server\Storage\FluentStorageServiceProvider::class,
         LucaDegasperi\OAuth2Server\OAuth2ServerServiceProvider::class,
-        Gloudemans\Shoppingcart\ShoppingcartServiceProvider::class
+        Gloudemans\Shoppingcart\ShoppingcartServiceProvider::class,
+        Barryvdh\Cors\ServiceProvider::class,
+
 
 
     ],

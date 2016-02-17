@@ -11,7 +11,7 @@
 |
 */
 
-
+header("Access-Control-Allow-Origin: *");
 Route::get('/', function () {
     return view('welcome');
 });
@@ -33,30 +33,32 @@ Route::get('karyawan/destroy/{id}','PatientController@destroy');
 
 
 
-Route::group(['prefix' => 'api/v1'], function () {
 
-        //yang menggunakan cart letakan di group ini
-        Route::group(['middleware' => ['web']], function () {
-            //
-            Route::post('order/cart/add','OrderController@cart_add');
-            Route::get('order/cart/get','OrderController@cart_get');
-            Route::get('order/cart/destroy','OrderController@cart_destroy');
-            Route::delete('order/cart/remove/{id}','OrderController@cart_remove');
-            Route::get('order/lab','OrderController@pilih_lab');
-            Route::post('order/datadiri','OrderController@data_diri');
-            Route::post('order/konfirmasi','OrderController@konfirmasi');
-            Route::get('order/input','OrderController@order_input');
-            Route::get('hasil','OrderController@hasil_index');
-        });
-        Route::get('order/pemeriksaan/package','OrderController@pemeriksaan_package');
-        Route::get('order/pemeriksaan/panel','OrderController@pemeriksaan_panel');
-        Route::get('order/pemeriksaan/item','OrderController@pemeriksaan_item');
-        Route::get('order/riwayat','OrderController@riwayat');
-        Route::get('order/riwayat/detail/{id}','OrderController@riwayat_detail');
-        Route::get('provinsi','OrderController@provinsi');
-        Route::get('kabupaten/{id}','OrderController@kabupaten');
-        Route::get('kecamatan/{id}','OrderController@kecamatan');
-});
+  Route::group(['prefix' => 'api/v1'], function () {
+
+          //yang menggunakan cart letakan di group ini
+          Route::group(['middleware' => ['web', 'cors']], function () {
+              //
+              Route::post('order/cart/add','OrderController@cart_add');
+              Route::get('order/cart/get','OrderController@cart_get');
+              Route::get('order/cart/destroy','OrderController@cart_destroy');
+              Route::delete('order/cart/remove/{id}','OrderController@cart_remove');
+              Route::get('order/lab','OrderController@pilih_lab');
+              Route::post('order/datadiri','OrderController@data_diri');
+              Route::post('order/konfirmasi','OrderController@konfirmasi');
+              Route::get('order/input','OrderController@order_input');
+              Route::get('hasil','OrderController@hasil_index');
+
+          Route::get('order/pemeriksaan/package','OrderController@pemeriksaan_package');
+          Route::get('order/pemeriksaan/panel','OrderController@pemeriksaan_panel');
+          Route::get('order/pemeriksaan/item','OrderController@pemeriksaan_item');
+          Route::get('order/riwayat','OrderController@riwayat');
+          Route::get('order/riwayat/detail/{id}','OrderController@riwayat_detail');
+          Route::get('provinsi','OrderController@provinsi');
+          Route::get('kabupaten/{id}','OrderController@kabupaten');
+          Route::get('kecamatan/{id}','OrderController@kecamatan');
+          });
+  });
 
 
 
