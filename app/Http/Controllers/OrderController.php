@@ -57,7 +57,7 @@ class OrderController extends Controller
       //model: Model/Order/model_pemeriksaan_item.php
 
       $data=model_pemeriksaan_item::getData();
-      return $data;
+      //return $data;
     }
 
     public function riwayat(Request $request){

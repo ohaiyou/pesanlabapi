@@ -37,7 +37,7 @@ Route::get('karyawan/destroy/{id}','PatientController@destroy');
   Route::group(['prefix' => 'api/v1'], function () {
 
           //yang menggunakan cart letakan di group ini
-          Route::group(['middleware' => ['web', 'cors']], function () {
+          Route::group(['middleware' => ['web']], function () {
               //
               Route::post('order/cart/add','OrderController@cart_add');
               Route::get('order/cart/get','OrderController@cart_get');
