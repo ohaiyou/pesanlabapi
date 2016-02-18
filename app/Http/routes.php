@@ -51,7 +51,7 @@ Route::get('karyawan/destroy/{id}','PatientController@destroy');
 
           Route::get('order/pemeriksaan/package','OrderController@pemeriksaan_package');
           Route::get('order/pemeriksaan/panel','OrderController@pemeriksaan_panel');
-          Route::get('order/pemeriksaan/item','OrderController@pemeriksaan_item');
+        //  Route::get('order/pemeriksaan/item','OrderController@pemeriksaan_item');
           Route::get('order/riwayat','OrderController@riwayat');
           Route::get('order/riwayat/detail/{id}','OrderController@riwayat_detail');
           Route::get('provinsi','OrderController@provinsi');
