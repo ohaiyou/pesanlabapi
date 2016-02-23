@@ -14,8 +14,9 @@ class model_riwayat extends Model
 
          session(['email' => 'ahmadkarimhh@gmail.com']);
         $tableIds = DB::table('orders')
-    		->join('company','company.company_code','=','orders.company_code')
-    		->select('orders_code','date','patient_code','grand_total','company.name','other','orders.status')
+    		->join('lab','lab.lab_code','=','orders.company_code')
+        ->join('company','company.company_code','=','lab.company_code')
+    		->select('orders_code','date','patient_code as user_email','grand_total','lab.name as lab_name','other','orders.status')
     		->orderby('date','desc')
     		->where('orders.patient_code','=',session('email'))
     		->get();
@@ -24,12 +25,29 @@ class model_riwayat extends Model
 
          for($i = 0;$i < count($tableIds);$i++)
          {
-             $jsonResult[$i]["orders_code"] = $tableIds[$i]->orders_code;
-             $jsonResult[$i]["patient_code"] = $tableIds[$i]->patient_code;
-             $jsonResult[$i]["date"] = $tableIds[$i]->date;
-             $jsonResult[$i]["grand_total"] = 'Rp '. number_format($tableIds[$i]->grand_total , 2, ',', '.');
-             $jsonResult[$i]["company.name"] = $tableIds[$i]->name;
-             $jsonResult[$i]["other"] = $tableIds[$i]->other;
+           $jsonResult[$i]["orders_code"] = $tableIds[$i]->orders_code;
+           $jsonResult[$i]["user_email"] = $tableIds[$i]->user_email;
+           $jsonResult[$i]["date"] = $tableIds[$i]->date;
+           $jsonResult[$i]["grand_total"] = 'Rp '. number_format($tableIds[$i]->grand_total , 2, ',', '.');
+           $jsonResult[$i]["lab_name"] = $tableIds[$i]->lab_name;
+        //   $jsonResult[$i]["other"] = $tableIds[$i]->other;
+
+             $other=explode("#",$tableIds[$i]->other);
+             $jsonResult[$i]["patient_name"]=$other[0];
+             $jsonResult[$i]["Birth"]=$other[1];
+             $jsonResult[$i]["gender"]=$other[2];
+             $jsonResult[$i]["address"]=$other[3];
+             $jsonResult[$i]["city_code"]=$other[4];
+             $jsonResult[$i]["phone"]=$other[5];
+             if(!empty($other[6])){
+               $jsonResult[$i]["service"]=$other[6];
+             }
+             if(!empty($other[7])){
+               $jsonResult[$i]["test_date"]=$other[7];
+             }
+
+
+
 
              //isi status pemesanan
              $status="";
@@ -41,7 +59,7 @@ class model_riwayat extends Model
                $status="Dibatalkan";
              }
 
-             $jsonResult[$i]["orders.status"] = $status;
+             $jsonResult[$i]["orders_status"] = $status;
          }
          return Response()->json(array(
                      'error'     =>  false,

@@ -33,7 +33,7 @@ class model_hasil_index extends Model
 
 		$patient=DB::table('patient')
 		->where('email','=',session('email'))
-    ->select('name','email')
+    ->select('name','email',DB::raw("DATE_FORMAT(regis_date,'%v %b %Y %h:%i %p') as register_date"))
 		->get();
 
 
