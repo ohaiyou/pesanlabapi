@@ -10,6 +10,8 @@ class model_konfirmasi extends Model
     //
 
     public static function getData($request){
+
+      $currency=  app('App\Http\Controllers\FunctionController');
       $lab_code=DB::table('lab')
       ->join('company','company.company_code','=','lab.company_code')
       ->where('lab.lab_code','=',$request->lab_code)
@@ -25,6 +27,7 @@ class model_konfirmasi extends Model
 
         session(['lab_code'=>$lab_code]);
       }
+
 
 
 
@@ -87,6 +90,7 @@ class model_konfirmasi extends Model
         //isi item dari panel
         $total_item=0;
         $total_normal=0;
+
         if(substr($value->id,0,2)=='P0'){
 
             $tableIds = DB::table('panel')
@@ -115,6 +119,7 @@ class model_konfirmasi extends Model
                     ->select(DB::raw('item.name'),'item_master.master_code','item_master.preparation','item.company_code','price_disc','item.price')
                     ->get();
 
+
                     foreach ($table2 as $value_panel) {
                       # code...
                       //untuk menghitung total panel
@@ -134,10 +139,21 @@ class model_konfirmasi extends Model
                     $result[$i]["panel_detail"][$idx_panel]["panel_code"]=$tableIds[$i]->panel_codepk;
                     $result[$i]["panel_detail"][$idx_panel]["cmpany_name"]=$tableIds[$i]->company;
                     $result[$i]["panel_detail"][$idx_panel]["company_code"]=$tableIds[$i]->company_code;
-                    $result[$i]["panel_detail"][$idx_panel]["item"]=$table2;
-                    $result[$i]["panel_detail"][$idx_panel]["harga_normal"]=$total_normal;
-                    $result[$i]["panel_detail"][$idx_panel]["harga_diskon"]=$total_item;
-                    $result[$i]["panel_detail"][$idx_panel]["harga_hemat"]=$total_normal-$total_item;
+                    //$result[$i]["panel_detail"][$idx_panel]["item"]=$table2;
+                    //tampilkan item
+                    for ($k=0; $k < count($table2); $k++) {
+                      # code...
+                      $result[$i]["panel_detail"][$idx_panel]["item"][$k]["name"]=$table2[$k]->name;
+                      $result[$i]["panel_detail"][$idx_panel]["item"][$k]["preparation"]=$table2[$k]->preparation;
+                      $result[$i]["panel_detail"][$idx_panel]["item"][$k]["harga"]=
+                      $currency->getcurrency($table2[$k]->price);
+                      $result[$i]["panel_detail"][$idx_panel]["item"][$k]["harga_diskon"]=
+                      $currency->getcurrency($table2[$k]->price_disc);
+                    }
+                    $result[$i]["panel_detail"][$idx_panel]["harga_normal"]=$currency->getcurrency($total_normal);
+                    $result[$i]["panel_detail"][$idx_panel]["harga_diskon"]=$currency->getcurrency($total_item);
+                    $result[$i]["panel_detail"][$idx_panel]["harga_hemat"]=$currency->getcurrency($total_normal-$total_item);
+
 
 
 
@@ -195,7 +211,17 @@ class model_konfirmasi extends Model
 
                     $result[$i]["package_detail"][$idx_package]["panel"][$k]["panel_code"]=$table2[$k]->panel_code;
                     $result[$i]["package_detail"][$idx_package]["panel"][$k]["panel_name"]=$table2[$k]->name;
-                    $result[$i]["package_detail"][$idx_package]["panel"][$k]["item"]=$item;
+                    //$result[$i]["package_detail"][$idx_package]["panel"][$k]["item"]=$item;
+
+                    //tampilkan item
+                    for ($l=0; $l < count($item); $l++) {
+                      # code...
+                      $result[$i]["package_detail"][$idx_package]["panel"][$k]["item"][$l]["name"]=$item[$l]->name;
+                      $result[$i]["package_detail"][$idx_package]["panel"][$k]["item"][$l]["preparation"]=$item[$l]->preparation;
+                      $result[$i]["package_detail"][$idx_package]["panel"][$k]["item"][$l]["harga"]=
+                      $currency->getcurrency($item[$l]->price);
+                      $result[$i]["package_detail"][$idx_package]["panel"][$k]["item"][$l]["harga_diskon"]=$currency->getcurrency($item[$l]->price_disc);
+                    }
 
                       foreach ($item as $value_panel) {
                         # code...
@@ -215,9 +241,10 @@ class model_konfirmasi extends Model
 
                  }
 
-                 $result[$i]["package_detail"][$idx_package]["harga_normal"]=$total_normal;
-                 $result[$i]["package_detail"][$idx_package]["harga_diskon"]=$total_item;
-                 $result[$i]["package_detail"][$idx_package]["harga_hemat"]=$total_normal-$total_item;
+
+                 $result[$i]["package_detail"][$idx_package]["harga_normal"]=$currency->getcurrency($total_normal);
+                 $result[$i]["package_detail"][$idx_package]["harga_diskon"]=$currency->getcurrency($total_item);
+                 $result[$i]["package_detail"][$idx_package]["harga_hemat"]=$currency->getcurrency($total_normal-$total_item);
 
 
                  //return $packageitem;
@@ -245,25 +272,38 @@ class model_konfirmasi extends Model
             //untuk menghitung total panel
             $total_item=0;
             $total_normal=0;
-            $total_item+=$value_item->price_disc;
-            $total_normal+=$value_item->price;
+            $total_item+=$value_item->harga_diskon;
+            $total_normal+=$value_item->harga_normal;
 
           }
           //untuk menghitung harga totl lab
             $total_lab+=$total_item;
             //untuk menghitung harga toal harga normal lab_name
             $total_lab_normal+=$total_normal;
-            $result[$i]["item_detail"][$idx_item]["item"]=$jenisitem;
-            $idx_item+=1;
+            //$result[$i]["item_detail"][$idx_item]["item"]=$jenisitem;
+            //tampilkan item
+
+              for ($j=0; $j < count($jenisitem) ; $j++) {
+                # code...
+                $result[0]["item_detail"][$idx_item]["item"][$j]["code"]=$jenisitem[$j]->code;
+                $result[0]["item_detail"][$idx_item]["item"][$j]["name"]=$jenisitem[$j]->name;
+                $result[0]["item_detail"][$idx_item]["item"][$j]["harga_diskon"]=$currency->getcurrency($total_item);
+                $result[0]["item_detail"][$idx_item]["item"][$j]["harga_normal"]=$currency->getcurrency($total_normal);
+                $result[0]["item_detail"][$idx_item]["item"][$j]["harga_hemat"]=$currency->getcurrency($total_normal-$total_item);
+                $idx_item+=1;
+              }
+
+
+
 
         }
   //harga total lab
 
 
 }//end 1st foreach
-$result[$i]["Total_Harga_Normal"]=$total_lab_normal;
-$result[$i]["Total_Harga_Diskon"]=$total_lab;
-$result[$i]["Total_Harga_Hemat"]=$total_lab_normal-$total_lab;
+$result[$i]["Total_Harga_Normal"]=$currency->getcurrency($total_lab_normal);
+$result[$i]["Total_Harga_Diskon"]=$currency->getcurrency($total_lab);
+$result[$i]["Total_Harga_Hemat"]=$currency->getcurrency($total_lab_normal-$total_lab);
 
 return Response()->json(array(
             'error'     =>  false,

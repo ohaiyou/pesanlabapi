@@ -3,7 +3,7 @@
 namespace App\Models\Order;
 use DB;
 use Illuminate\Database\Eloquent\Model;
-
+use Cart;
 class model_pemeriksaan_package extends Model
 {
     //
@@ -23,6 +23,22 @@ class model_pemeriksaan_package extends Model
 
                      $jsonResult[$i]["package_master_code"] = $tableIds[$i]->package_master_code;
                       $jsonResult[$i]["name"] = $tableIds[$i]->name;
+                      //check cart
+                      $flag=0;
+                      if (count(Cart::instance('cart')->content())==0){
+                        $jsonResult[$i]["button"] = 'add';
+                      }
+                      foreach (Cart::instance('cart')->content() as  $value) {
+                          if($value->id== $tableIds[$i]->package_master_code){
+                            $flag=1;
+                            $jsonResult[$i]["button"] = 'remove';
+                          }
+                      }
+                      if($flag!=1){
+                        $jsonResult[$i]["button"] = 'add';
+                      }
+                      //close check cart
+
                      $id = $tableIds[$i]->package_master_code;
 
                      $table2 = DB::table('panel')

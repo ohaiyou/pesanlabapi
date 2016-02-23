@@ -16,7 +16,7 @@ class model_data_diri extends Model
       echo $request->telp;
       echo $request->layanan;*/
 
-      session(['data_diri'=>$request->nama_pasien."#".$request->dob."#".$request->gender."#".$request->alamat."#".$request->city_code."#".$request->telp."#".$request->layanan]);
+      session(['data_diri'=>$request->nama_pasien."#".$request->birth."#".$request->gender."#".$request->address."#".$request->city_code."#".$request->phone."#".$request->service."#".$request->trader_set_unstable_period_date."#".$request->jam_home_service]);
       return session('data_diri');
     }
 

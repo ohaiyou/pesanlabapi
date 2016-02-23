@@ -33,6 +33,7 @@ class model_hasil_index extends Model
 
 		$patient=DB::table('patient')
 		->where('email','=',session('email'))
+    ->select('name','email')
 		->get();
 
 

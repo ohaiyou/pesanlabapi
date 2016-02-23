@@ -3,7 +3,7 @@
 namespace App\Models\Order;
 use DB;
 use Illuminate\Database\Eloquent\Model;
-
+use Cart;
 class model_pemeriksaan_item extends Model
 {
     //
@@ -18,12 +18,30 @@ class model_pemeriksaan_item extends Model
                 $jsonResult = array();
                 $jsonResult2 = array();
 
-                 for($i = 0;$i < count($tableIds);$i++)
-                 {
-                     $jsonResult[$i]["master_code"] = $tableIds[$i]->master_code;
-                     $jsonResult[$i]["name"] = $tableIds[$i]->name;
-                     $jsonResult[$i]["preparation"] = $tableIds[$i]->preparation;
-                 }
+
+                  # code...
+
+                for($i = 0;$i < count($tableIds);$i++)
+                {
+
+                  $jsonResult[$i]["master_code"] = $tableIds[$i]->master_code;
+                  $jsonResult[$i]["name"] = $tableIds[$i]->name;
+                  $jsonResult[$i]["preparation"] = $tableIds[$i]->preparation;
+                  $flag=0;
+                  if (count(Cart::instance('cart')->content())==0){
+                    $jsonResult[$i]["button"] = 'add';
+                  }
+                  foreach (Cart::instance('cart')->content() as  $value) {
+                      if($value->id== $tableIds[$i]->master_code){
+                        $flag=1;
+                        $jsonResult[$i]["button"] = 'remove';
+                      }
+                  }
+                  if($flag!=1){
+                    $jsonResult[$i]["button"] = 'add';
+                  }
+               }
+
                  return Response()->json(array(
                              'error'     =>  false,
                              'stores'    =>  $jsonResult),

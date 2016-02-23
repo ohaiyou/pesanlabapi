@@ -21,7 +21,7 @@ class model_cart_add extends Model
     		  )
   		  ));
 
-        
+
           return Cart::instance('cart')->content();
     }
 }

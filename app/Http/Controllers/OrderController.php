@@ -26,9 +26,10 @@ use App\Models\Order\model_order_input;
 use App\Models\Order\model_hasil_index;
 
 
-
 class OrderController extends Controller
 {
+
+
     //
     public function pemeriksaan_package(){
       //name: karim
@@ -57,7 +58,7 @@ class OrderController extends Controller
       //model: Model/Order/model_pemeriksaan_item.php
 
       $data=model_pemeriksaan_item::getData();
-      //return $data;
+      return $data;
     }
 
     public function riwayat(Request $request){

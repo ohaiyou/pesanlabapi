@@ -5,12 +5,17 @@ namespace App\Models\Order;
 use Illuminate\Database\Eloquent\Model;
 use Cart;
 use DB;
+use App\Http\Controllers\FunctionController;
+
 class model_pilih_lab extends Model
 {
     //
     public static function getData(){
 
 
+
+        $currency=  app('App\Http\Controllers\FunctionController');
+        //return $currency->getcurrency("500000");
         //menampilkan item berdasarkan lab
         $result=array();
         $cart=Cart::instance('cart')->Content();
@@ -95,9 +100,6 @@ class model_pilih_lab extends Model
                   {
 
 
-                      //$querypanelitem[$i]["panel_code"] = $tableIds[$i]->panel_codepk;
-                      //$querypanelitem[$i]["name"] = $tableIds[$i]->name;
-                      //$querypanelitem[$i]["company"] = $tableIds[$i]->company;
                       $id = $tableIds[$i]->panel_codepk;
 
                       $table2 = DB::table('panel')
@@ -128,10 +130,23 @@ class model_pilih_lab extends Model
                       $result[$a]["panel_detail"][$idx_panel]["panel_code"]=$tableIds[$i]->panel_codepk;
                       $result[$a]["panel_detail"][$idx_panel]["lab_name"]=$tableIds[$i]->company;
                       $result[$a]["panel_detail"][$idx_panel]["lab_code"]=$tableIds[$i]->company_code;
-                      $result[$a]["panel_detail"][$idx_panel]["item"]=$table2;
-                      $result[$a]["panel_detail"][$idx_panel]["harga_normal"]=$total_normal;
-                      $result[$a]["panel_detail"][$idx_panel]["harga_diskon"]=$total_item;
-                      $result[$a]["panel_detail"][$idx_panel]["harga_hemat"]=$total_normal-$total_item;
+                      //$result[$a]["panel_detail"][$idx_panel]["item"]=$table2;
+
+                      //tampilkan item
+                      for ($k=0; $k < count($table2); $k++) {
+                        # code...
+
+                        $result[$a]["panel_detail"][$idx_panel]["item"][$k]["name"]=$table2[$k]->name;
+                        $result[$a]["panel_detail"][$idx_panel]["item"][$k]["preparation"]=$table2[$k]->preparation;
+                        $result[$a]["panel_detail"][$idx_panel]["item"][$k]["harga"]=
+                        $currency->getcurrency($table2[$k]->price);
+                        $result[$a]["panel_detail"][$idx_panel]["item"][$k]["harga_diskon"]=
+                        $currency->getcurrency($table2[$k]->price_disc);
+
+                      }
+                      $result[$a]["panel_detail"][$idx_panel]["harga_normal"]= $currency->getcurrency($total_normal);
+                      $result[$a]["panel_detail"][$idx_panel]["harga_diskon"]=$currency->getcurrency($total_item);
+                      $result[$a]["panel_detail"][$idx_panel]["harga_hemat"]=$currency->getcurrency($total_normal-$total_item);
 
 
 
@@ -184,12 +199,25 @@ class model_pilih_lab extends Model
                       ->where("package_detail.panel_code",'=',$table2[$k]->panel_code)
                       ->where("package_detail.package_code",'=',$id)
                       ->where("item.company_code",'=',$tableIds[$i]->company_code)
-                      ->select(DB::raw('item.name'),'item_master.preparation','item.price_disc','item.price')
+                      ->select(DB::raw('item.name'),'item_master.preparation','item.price_disc','item.price','item_master.preparation')
                       ->get();
 
                       $result[$a]["package_detail"][$idx_package]["panel"][$k]["panel_code"]=$table2[$k]->panel_code;
                       $result[$a]["package_detail"][$idx_package]["panel"][$k]["panel_name"]=$table2[$k]->name;
-                      $result[$a]["package_detail"][$idx_package]["panel"][$k]["item"]=$item;
+                      //$result[$a]["package_detail"][$idx_package]["panel"][$k]["item"]=$item;
+
+                      //tampilkan item
+                      for ($l=0; $l < count($item); $l++) {
+                        # code...
+
+                        $result[$a]["package_detail"][$idx_package]["panel"][$k]["item"][$l]["name"]=$item[$l]->name;
+                        $result[$a]["package_detail"][$idx_package]["panel"][$k]["item"][$l]["preparation"]=$item[$l]->preparation;
+                        $result[$a]["package_detail"][$idx_package]["panel"][$k]["item"][$l]["harga"]=
+                        $currency->getcurrency($item[$l]->price);
+                        $result[$a]["package_detail"][$idx_package]["panel"][$k]["item"][$l]["harga_diskon"]=
+                        $currency->getcurrency($item[$l]->price_disc);
+
+                      }
 
                         foreach ($item as $value_panel) {
                           # code...
@@ -209,9 +237,11 @@ class model_pilih_lab extends Model
 
                    }
 
-                   $result[$a]["package_detail"][$idx_package]["harga_normal"]=$total_normal;
-                   $result[$a]["package_detail"][$idx_package]["harga_diskon"]=$total_item;
-                   $result[$a]["package_detail"][$idx_package]["harga_hemat"]=$total_normal-$total_item;
+
+
+                   $result[$a]["package_detail"][$idx_package]["harga_normal"]=$currency->getcurrency($total_normal);
+                   $result[$a]["package_detail"][$idx_package]["harga_diskon"]=$currency->getcurrency($total_item);
+                   $result[$a]["package_detail"][$idx_package]["harga_hemat"]=$currency->getcurrency($total_normal-$total_item);
 
 
                    //return $packageitem;
@@ -236,20 +266,32 @@ class model_pilih_lab extends Model
     				->get();
 
 
-            foreach ($table2 as $value_item) {
+            foreach ($jenisitem as $value_item) {
               # code...
               //untuk menghitung total panel
               $total_item=0;
               $total_normal=0;
-              $total_item+=$value_item->price_disc;
-              $total_normal+=$value_item->price;
+              $total_item+=$value_item->harga_diskon;
+              $total_normal+=$value_item->harga_normal;
 
             }
             //untuk menghitung harga totl lab
               $total_lab+=$total_item;
               //untuk menghitung harga toal harga normal lab_name
               $total_lab_normal+=$total_normal;
-              $result[$a]["item_detail"][$idx_item]["item"]=$jenisitem;
+              //$result[$a]["item_detail"][$idx_item]["item"]=$jenisitem;
+
+              //tampilkan item
+              for ($i=0; $i < count($jenisitem); $i++) {
+                # code...
+                $result[$a]["item_detail"][$idx_item]["item"][$i]["code"]=$jenisitem[$i]->code;
+                $result[$a]["item_detail"][$idx_item]["item"][$i]["name"]=$jenisitem[$i]->name;
+                $result[$a]["item_detail"][$idx_item]["item"][$i]["harga_diskon"]=$currency->getcurrency($jenisitem[$i]->harga_diskon);
+                $result[$a]["item_detail"][$idx_item]["item"][$i]["harga_normal"]=$currency->getcurrency($jenisitem[$i]->harga_normal);
+                $result[$a]["item_detail"][$idx_item]["item"][$i]["harga_hemat"]=$currency->getcurrency($jenisitem[$i]->harga_hemat);
+              }
+
+
               $idx_item+=1;
 
     			}
@@ -257,9 +299,9 @@ class model_pilih_lab extends Model
 
 
   }//end 1st foreach
-  $result[$a]["Total_Harga_Normal"]=$total_lab_normal;
-  $result[$a]["Total_Harga_Diskon"]=$total_lab;
-  $result[$a]["Total_Harga_Hemat"]=$total_lab_normal-$total_lab;
+  $result[$a]["Total_Harga_Normal"]=$currency->getcurrency($total_lab_normal);
+  $result[$a]["Total_Harga_Diskon"]=$currency->getcurrency($total_lab);
+  $result[$a]["Total_Harga_Hemat"]=$currency->getcurrency($total_lab_normal-$total_lab);
   $result[$a]["Cabang_lab"]=$detail_lab;
 
       //array_push($data_lab, 'lab_detail', $detail_lab);

@@ -11,7 +11,8 @@
 |
 */
 
-header("Access-Control-Allow-Origin: *");
+
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -33,7 +34,6 @@ Route::get('karyawan/destroy/{id}','PatientController@destroy');
 
 
 
-
   Route::group(['prefix' => 'api/v1'], function () {
 
           //yang menggunakan cart letakan di group ini
@@ -49,19 +49,59 @@ Route::get('karyawan/destroy/{id}','PatientController@destroy');
               Route::get('order/input','OrderController@order_input');
               Route::get('hasil','OrderController@hasil_index');
 
-          Route::get('order/pemeriksaan/package','OrderController@pemeriksaan_package');
-          Route::get('order/pemeriksaan/panel','OrderController@pemeriksaan_panel');
-        //  Route::get('order/pemeriksaan/item','OrderController@pemeriksaan_item');
-          Route::get('order/riwayat','OrderController@riwayat');
-          Route::get('order/riwayat/detail/{id}','OrderController@riwayat_detail');
-          Route::get('provinsi','OrderController@provinsi');
-          Route::get('kabupaten/{id}','OrderController@kabupaten');
-          Route::get('kecamatan/{id}','OrderController@kecamatan');
+              Route::get('order/pemeriksaan/package','OrderController@pemeriksaan_package');
+              Route::get('order/pemeriksaan/panel','OrderController@pemeriksaan_panel');
+
+              Route::get('order/riwayat','OrderController@riwayat');
+              Route::get('order/riwayat/detail/{id}','OrderController@riwayat_detail');
+              Route::get('provinsi','OrderController@provinsi');
+              Route::get('kabupaten/{id}','OrderController@kabupaten');
+              Route::get('kecamatan/{id}','OrderController@kecamatan');
+
+              Route::get('deskripsi/{id}','OtherController@deskripsi');
+
+
+              Route::group(['middleware' => ['oauth']], function () {
+                Route::get('check-token','PasswordGrantVerifier@check_token');
+                Route::post('login','LoginController@login');
+                Route::get('order/pemeriksaan/item','OrderController@pemeriksaan_item');
+              });
+
+
+
+
+
+
+
+              Route::post('oauth/access_token', function() {
+               return Response::json(Authorizer::issueAccessToken());
+                if(Authorizer::issueAccessToken()){
+                 foreach (Authorizer::issueAccessToken() as $value) {
+                   session(['token'=>$value]);
+                 }
+                }
+              });
+
+
+              Route::get('api', ['middleware' => ['oauth'], function() {
+               $user_id=Authorizer::getResourceOwnerId(); // the token user_id
+               $user=\App\User::find($user_id);// get the user data from database
+               return Response::json($user);
+              }]);
+
+
+
           });
   });
 
 
 
+
+
+
+  Route::get('hash/{id}', function() {
+    return Hash::make("{id}");
+  });
 
 
 /*
