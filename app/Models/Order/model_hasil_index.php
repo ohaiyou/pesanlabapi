@@ -87,7 +87,7 @@ class model_hasil_index extends Model
 
 		$count=count($hasil);
     $result[0]["user"]=$patient;
-    $result[0]["jumlah"]=$count;
+    $result[0]["total_result"]=$count;
 
 
 
@@ -101,7 +101,18 @@ class model_hasil_index extends Model
       $result[0]["result"][$i]["email_user"]=$hasil[$i]->patient_code;
       $result[0]["result"][$i]["grand_total"]=$hasil[$i]->grand_total;
       $result[0]["result"][$i]["lab_name"]=$hasil[$i]->name;
-      $result[0]["result"][$i]["orders_status"]=$hasil[$i]->status;
+
+      //isi status pemesanan
+      $status="";
+      if($hasil[$i]->status=="0"){
+        $status="Pending";
+      }elseif($hasil[$i]=="1"){
+        $status="Sukses";
+      }else{
+        $status="Dibatalkan";
+      }
+
+      $result[0]["result"][$i]["orders_status"]=$status;
       $other=explode("#",$hasil[$i]->other);
       $result[0]["result"][$i]["patient"][0]["patient_name"]=$other[0];
       $result[0]["result"][$i]["patient"][0]["Birth"]=$other[1];
