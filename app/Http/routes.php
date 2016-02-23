@@ -44,6 +44,7 @@ Route::get('karyawan/destroy/{id}','PatientController@destroy');
               Route::get('order/cart/destroy','OrderController@cart_destroy');
               Route::delete('order/cart/remove/{id}','OrderController@cart_remove');
               Route::get('order/lab','OrderController@pilih_lab');
+              Route::get('order/datadiriview','OrderController@data_diri_view');
               Route::post('order/datadiri','OrderController@data_diri');
               Route::post('order/konfirmasi','OrderController@konfirmasi');
               Route::get('order/input','OrderController@order_input');

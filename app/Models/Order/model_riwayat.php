@@ -16,7 +16,7 @@ class model_riwayat extends Model
         $tableIds = DB::table('orders')
     		->join('lab','lab.lab_code','=','orders.company_code')
         ->join('company','company.company_code','=','lab.company_code')
-    		->select('orders_code','date','patient_code as user_email','grand_total','lab.name as lab_name','other','orders.status')
+    		->select('orders_code',DB::raw("DATE_FORMAT(date,'%d %b %Y %h:%i %p') as date"),'patient_code as user_email','grand_total','lab.name as lab_name','other','orders.status')
     		->orderby('date','desc')
     		->where('orders.patient_code','=',session('email'))
     		->get();

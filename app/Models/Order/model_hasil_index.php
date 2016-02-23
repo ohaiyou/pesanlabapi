@@ -23,9 +23,10 @@ class model_hasil_index extends Model
 		//tampilkan list product
 		$hasil=DB::table('orders')
 		->join('company','company.company_code','=','orders.company_code')
+    ->join("lab","lab.company_code",'=','company.company_code')
     ->join('patient','patient.email','=','orders.patient_code')
 		->where('orders.patient_code','=',session('email'))
-		->select('orders_code','date','patient.patient_code','grand_total','company.name','other','orders.status',
+		->select('orders_code','date','patient.patient_code','grand_total','lab.name','other','orders.status',
     DB::raw("CONCAT('Hasil-', patient.name ,'-',orders.orders_code,'.pdf') as file_name"))
 		->orderby('date','desc');
 		//->get();
@@ -33,7 +34,7 @@ class model_hasil_index extends Model
 
 		$patient=DB::table('patient')
 		->where('email','=',session('email'))
-    ->select('name','email',DB::raw("DATE_FORMAT(regis_date,'%v %b %Y %h:%i %p') as register_date"))
+    ->select('name','email',DB::raw("DATE_FORMAT(regis_date,'%d %b %Y %h:%i %p') as register_date"))
 		->get();
 
 
@@ -81,14 +82,41 @@ class model_hasil_index extends Model
 		$hasil=$hasil->get();
 		//////////////////////
 
+
+
+
 		$count=count($hasil);
-    $result[0]["patient"]=$patient;
+    $result[0]["user"]=$patient;
     $result[0]["jumlah"]=$count;
+
+
+
+//->select('orders_code','date','patient.patient_code','grand_total','company.name','other','orders.status',
 
     for ($i=0; $i < count($hasil) ; $i++) {
       # code...
-      $result[$i]["hasil"]=$hasil;
+    //  $result[$i]["hasil"]=$hasil;
+      $result[$i]["result"][0]["orders_code"]=$hasil[$i]->orders_code;
+      $result[$i]["result"][0]["orders_date"]=$hasil[$i]->date;
+      $result[$i]["result"][0]["email_user"]=$hasil[$i]->patient_code;
+      $result[$i]["result"][0]["grand_total"]=$hasil[$i]->grand_total;
+      $result[$i]["result"][0]["lab_name"]=$hasil[$i]->name;
+      $result[$i]["result"][0]["orders_status"]=$hasil[$i]->status;
+      $other=explode("#",$hasil[$i]->other);
+      $result[$i]["result"][0]["patient"][0]["patient_name"]=$other[0];
+      $result[$i]["result"][0]["patient"][0]["Birth"]=$other[1];
+      $result[$i]["result"][0]["patient"][0]["address"]=$other[3];
+      $result[$i]["result"][0]["patient"][0]["gender"]=$other[2];
+      $result[$i]["result"][0]["patient"][0]["city_code"]=$other[4];
+      $result[$i]["result"][0]["patient"][0]["phone"]=$other[5];
+      if(!empty($other[6])){
+        $result[$i]["result"][0]["patient"][0]["service"]=$other[6];
+      }
+      if(!empty($other[7])){
+        $result[$i]["result"][0]["patient"][0]["test_date"]=$other[7];
+      }
     }
+
 
     return Response()->json(array(
                 'error'     =>  false,

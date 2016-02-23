@@ -24,6 +24,7 @@ use App\Models\Order\model_kecamatan;
 use App\Models\Order\model_konfirmasi;
 use App\Models\Order\model_order_input;
 use App\Models\Order\model_hasil_index;
+use App\Models\Order\model_data_diri_view;
 
 
 class OrderController extends Controller
@@ -124,6 +125,16 @@ class OrderController extends Controller
       //routes: Route::delete('order/cart/lab','OrderController@pilih_lab');
       //model: Model/Order/model_pilih_lab.php
       $data=model_pilih_lab::getData();
+      return $data;
+
+    }
+
+    public function data_diri_view(Request $request){
+      //name: karim
+      //date create:23 Feb 16
+      //routes: Route::get('order/datadiriview','OrderController@data_diri_view');
+      //model: Model/Order/data_diri_view.php
+      $data=model_data_diri::postData($request);
       return $data;
 
     }
