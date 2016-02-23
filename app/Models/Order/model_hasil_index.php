@@ -92,7 +92,7 @@ class model_hasil_index extends Model
 
 
 //->select('orders_code','date','patient.patient_code','grand_total','company.name','other','orders.status',
-//aaa
+//
     for ($i=0; $i < count($hasil) ; $i++) {
       # code...
     //  $result[$i]["hasil"]=$hasil;
