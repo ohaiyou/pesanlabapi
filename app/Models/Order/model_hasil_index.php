@@ -96,24 +96,24 @@ class model_hasil_index extends Model
     for ($i=0; $i < count($hasil) ; $i++) {
       # code...
     //  $result[$i]["hasil"]=$hasil;
-      $result[$i]["result"][0]["orders_code"]=$hasil[$i]->orders_code;
-      $result[$i]["result"][0]["orders_date"]=$hasil[$i]->date;
-      $result[$i]["result"][0]["email_user"]=$hasil[$i]->patient_code;
-      $result[$i]["result"][0]["grand_total"]=$hasil[$i]->grand_total;
-      $result[$i]["result"][0]["lab_name"]=$hasil[$i]->name;
-      $result[$i]["result"][0]["orders_status"]=$hasil[$i]->status;
+      $result[0]["result"][$i]["orders_code"]=$hasil[$i]->orders_code;
+      $result[0]["result"][$i]["orders_date"]=$hasil[$i]->date;
+      $result[0]["result"][$i]["email_user"]=$hasil[$i]->patient_code;
+      $result[0]["result"][$i]["grand_total"]=$hasil[$i]->grand_total;
+      $result[0]["result"][$i]["lab_name"]=$hasil[$i]->name;
+      $result[0]["result"][$i]["orders_status"]=$hasil[$i]->status;
       $other=explode("#",$hasil[$i]->other);
-      $result[$i]["result"][0]["patient"][0]["patient_name"]=$other[0];
-      $result[$i]["result"][0]["patient"][0]["Birth"]=$other[1];
-      $result[$i]["result"][0]["patient"][0]["address"]=$other[3];
-      $result[$i]["result"][0]["patient"][0]["gender"]=$other[2];
-      $result[$i]["result"][0]["patient"][0]["city_code"]=$other[4];
-      $result[$i]["result"][0]["patient"][0]["phone"]=$other[5];
+      $result[0]["result"][$i]["patient"][0]["patient_name"]=$other[0];
+      $result[0]["result"][$i]["patient"][0]["Birth"]=$other[1];
+      $result[0]["result"][$i]["patient"][0]["address"]=$other[3];
+      $result[0]["result"][$i]["patient"][0]["gender"]=$other[2];
+      $result[0]["result"][$i]["patient"][0]["city_code"]=$other[4];
+      $result[0]["result"][$i]["patient"][0]["phone"]=$other[5];
       if(!empty($other[6])){
-        $result[$i]["result"][0]["patient"][0]["service"]=$other[6];
+        $result[0]["result"][$i]["patient"][0]["service"]=$other[6];
       }
       if(!empty($other[7])){
-        $result[$i]["result"][0]["patient"][0]["test_date"]=$other[7];
+        $result[0]["result"][$i]["patient"][0]["test_date"]=$other[7];
       }
     }
 
