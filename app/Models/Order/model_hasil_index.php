@@ -83,7 +83,7 @@ class model_hasil_index extends Model
 		//////////////////////
 
 
-//aaa
+//bbb
 
 		$count=count($hasil);
     $result[0]["user"]=$patient;
