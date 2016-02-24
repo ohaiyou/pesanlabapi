@@ -81,7 +81,7 @@ class model_hasil_index extends Model
 		$hasil=$hasil->wherein('orders.orders_code',$arr_pdf);
 		$hasil=$hasil->get();
 		//////////////////////
-
+//tes
 
 
 
